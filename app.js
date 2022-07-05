@@ -3,11 +3,9 @@ let express = require('express')
 let axios = require('axios').default
 
 const PORT = process.env.PORT || 4000
-
 if (!process.env.TMDB_API_KEY) {
-    throw new Error('TMDB API KEY MUST BE PROVIDED')
+    throw new Error('TMDB_API_KEY not provided!')
 }
-
 const api_key = process.env.TMDB_API_KEY
 
 let app = express()
@@ -50,4 +48,4 @@ app.get('/tv', async (req, res) => {
     res.json(x.data)
 })
 
-app.listen(PORT)
+app.listen(PORT, () => console.log('http://localhost:' + PORT))
