@@ -2,44 +2,52 @@ require('dotenv').config()
 let express = require('express')
 let axios = require('axios').default
 
-const API_URL = 'https://api.themoviedb.org/3'
-
 const PORT = process.env.PORT || 4000
+
+if (!process.env.TMDB_API_KEY) {
+    throw new Error('TMDB API KEY MUST BE PROVIDED')
+}
+
 const api_key = process.env.TMDB_API_KEY
 
 let app = express()
 app.use(express.json())
 
-app.get('/search', (req, res) => {
+const API_URL = 'https://api.themoviedb.org/3'
+
+app.get('/search', async (req, res) => {
     let { query } = req.query
-    axios.get(API_URL + '/search/multi', {
+    let x = await axios.get(API_URL + '/search/multi', {
         params: {
             api_key,
             query,
             page: 1,
             language: 'en-US'
         }
-    }).then(x => { res.json(x.data.results) })
+    })
+    res.json(x.data.results)
 })
 
-app.get('/movie', (req, res) => {
+app.get('/movie', async (req, res) => {
     let { id } = req.query
-    axios.get(API_URL + '/movie/' + id, {
+    let x = await axios.get(API_URL + '/movie/' + id, {
         params: {
             api_key,
             language: 'en-US'
         }
-    }).then(x => { res.json(x.data) })
+    })
+    res.json(x.data)
 })
 
-app.get('/tv', (req, res) => {
+app.get('/tv', async (req, res) => {
     let { id } = req.query
-    axios.get(API_URL + '/tv/' + id, {
+    let x = await axios.get(API_URL + '/tv/' + id, {
         params: {
             api_key,
             language: 'en-US'
         }
-    }).then(x => { res.json(x.data) })
+    })
+    res.json(x.data)
 })
 
 app.listen(PORT)
